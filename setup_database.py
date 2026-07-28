@@ -2,7 +2,7 @@ import os
 import sqlalchemy as sa
 from dotenv import load_dotenv
 
-def create_dataframe():
+def setup_database():
     load_dotenv()
 
     database_url = os.environ["DATABASE_URL"]
@@ -33,3 +33,4 @@ def create_dataframe():
     )
 
     metadata.create_all(engine)
+    return engine, run_table

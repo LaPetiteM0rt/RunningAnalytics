@@ -1,14 +1,17 @@
 import os
 import json
+
 import strava_auth
 import get_strava_runs
 from data_processor import process_raw_data
+from setup_database import setup_database
+from populate_database import populate_database
 
 
 def main():
     tokens = strava_auth.load_tokens()
 
-    # FIRST RUN
+    # First auth
     if not tokens:
         print("No tokens → OAuth flow")
 
@@ -17,7 +20,7 @@ def main():
 
         strava_auth.save_tokens(tokens)
 
-    # NEXT RUNS
+    # Next auth
     else:
         print("Refreshing token...")
 
@@ -36,7 +39,11 @@ def main():
     with open("data/raw/runs_raw.json", "w") as f:
         json.dump(activities, f, indent=2)
 
-process_raw_data("data/raw/runs_raw.json")
+    process_raw_data("data/raw/runs_raw.json")
+
+    setup_database()
+
+    populate_database()
 
 if __name__ == "__main__":
     main()
